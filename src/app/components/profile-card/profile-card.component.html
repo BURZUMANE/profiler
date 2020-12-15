@@ -1,56 +1,67 @@
-<mat-card class="w-75 card">
-  <div class="top d-flex justify-content-between align-items-center">
-    <h3>User profile</h3>
-    <div class="button-wrapper">
-      <div *ngIf="onEdit; else elseBlock">
-        <button mat-button (click)="toggleEdit()">edit</button>
+<div class="wrapper d-flex align-items-center vh-100 black">
+  <mat-card class="w-75 card">
+    <div class="top d-flex justify-content-between align-items-center">
+      <h3>User profile</h3>
+      <div class="button-wrapper">
+        <div *ngIf="onEdit; else elseBlock">
+          <button mat-button (click)="toggleEdit()">edit</button>
+        </div>
+        <ng-template #elseBlock>
+          <button mat-button color="warn" (click)="onCancel()">cancel</button>
+          <button mat-button color="primary" (click)="saveForm()">save</button>
+        </ng-template>
       </div>
-      <ng-template #elseBlock>
-        <button mat-button color="warn" (click)="onCancel()">cancel</button>
-        <button mat-button color="primary" (click)="saveForm()">save</button>
-      </ng-template>
     </div>
-  </div>
-  <div [formGroup]="form" class="d-flex flex-wrap justify-content-around">
-    <mat-form-field class="mr-1" appearance="outline" class="w-50">
-      <mat-label>name</mat-label>
-      <input type="text" placeholder="Пошук" formControlName="name" [readonly]="onEdit" matInput>
-    </mat-form-field>
-    <mat-form-field appearance="outline" class="w-50">
-      <mat-label>Choose a date</mat-label>
-      <input matInput [matDatepicker]="picker" formControlName="dateOfBirth" [disabled]="onEdit">
-      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
 
-    <mat-form-field appearance="outline" class="w-50">
-      <mat-label>country of birth</mat-label>
-      <mat-select formControlName="countryOfBirth" [disabled]="onEdit">
-        <mat-option *ngFor="let country of countriesList" [value]="country.name">
-          {{country.name}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field appearance="outline" class="w-50">
-      <mat-label>languages</mat-label>
-      <mat-select formControlName="languages" multiple [disabled]="onEdit">
-        <mat-option *ngFor="let language of languages" [value]="language">
-          {{language}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+    <div [formGroup]="form" class="d-flex flex-wrap justify-content-around">
+      <div class="co-12 col-sm-6 p-0">
+        <mat-form-field class="mr-1" appearance="outline" class="w-100">
+          <mat-label>name</mat-label>
+          <input type="text" placeholder="Пошук" formControlName="name" [readonly]="onEdit" matInput>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Choose a date</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="dateOfBirth" [disabled]="onEdit">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
+      <div class="col-12 col-sm-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>country of birth</mat-label>
+          <mat-select formControlName="countryOfBirth" [disabled]="onEdit">
+            <mat-option *ngFor="let country of countriesList" [value]="country.name">
+              {{country.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>languages</mat-label>
+          <mat-select formControlName="languages" multiple [disabled]="onEdit">
+            <mat-option *ngFor="let language of languages" [value]="language">
+              {{language}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col-12 d-flex justify-content-start">
+        <div class="w-100 d-flex justify-content-start">
+          <label id="example-radio-group-label" class="d-block mr-2">gender:</label>
+          <mat-radio-group
+            class="d-flex flex-column"
+            aria-labelledby="example-radio-group-label"
+            class="example-radio-group"
+            formControlName="gender" [disabled]="onEdit">
+            <mat-radio-button class="example-radio-button" *ngFor="let gender of genders" [value]="gender" class="mr-2">
+              {{gender}}
+            </mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </div>
 
-    <div class="w-100 d-flex justify-content-start">
-      <label id="example-radio-group-label" class="d-block mr-2">gender:</label>
-      <mat-radio-group
-        class="d-flex flex-column"
-        aria-labelledby="example-radio-group-label"
-        class="example-radio-group"
-        formControlName="gender" [disabled]="onEdit">
-        <mat-radio-button class="example-radio-button" *ngFor="let gender of genders" [value]="gender" class="mr-2">
-          {{gender}}
-        </mat-radio-button>
-      </mat-radio-group>
+
+
     </div>
-  </div>
-</mat-card>
+  </mat-card>
+
+</div>

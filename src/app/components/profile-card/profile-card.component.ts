@@ -13,7 +13,7 @@ export class ProfileCardComponent implements OnInit, OnChanges {
 
   public languages: any[];
 
-  public genders = ['male', 'other'];
+  public genders = ['male', 'female', 'other'];
 
   public onEdit = true;
 
@@ -39,6 +39,7 @@ export class ProfileCardComponent implements OnInit, OnChanges {
     localStorage.setItem(
       'profileData',
       JSON.stringify({ ...this.form.value, dateOfBirth: moment(this.form.value.dateOfBirth).format('YYYY-MM-DD') }));
+    this.toggleEdit();
   }
 
   private resetForm(): void {
