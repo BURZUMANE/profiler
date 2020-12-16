@@ -1,16 +1,18 @@
-import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { Component, OnInit, OnDestroy} from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
 import { AgeValidator } from '../../custom-validators/age.validator';
 import * as moment from 'moment';
-import { J } from '@angular/cdk/keycodes';
+import { Observable, Subject } from 'rxjs';
+import { ProfileService } from '../../services/profile.service';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-profile-card',
   templateUrl: './profile-card.component.html',
   styleUrls: ['./profile-card.component.scss']
 })
-export class ProfileCardComponent implements OnInit, OnChanges {
-  @Input() countriesList: any;
+export class ProfileCardComponent implements OnInit, OnDestroy {
+  public countriesList$: Observable<any>;
 
   public languages: any[];
 
@@ -18,17 +20,23 @@ export class ProfileCardComponent implements OnInit, OnChanges {
 
   public onEdit = true;
 
+  private resetForm(): void {
+    const formData = JSON.parse(localStorage.getItem('profileData'));
+    this.form.patchValue({ ...formData });
+  }
+
+  private unsubscribeAll: Subject<any>;
+
   public get fromFC(): any {
     return this.form.get('dateOfBirth');
   }
 
-
   public form = this.fb.group({
-    name: [''],
-    dateOfBirth: [moment(), [AgeValidator]],
-    countryOfBirth: [],
-    languages: [[]],
-    gender: []
+    name: ['', [Validators.required]],
+    dateOfBirth: [moment(), [Validators.required, AgeValidator]],
+    countryOfBirth: [null, [Validators.required]],
+    languages: [[], [Validators.required]],
+    gender: [null, [Validators.required]]
   });
 
   public toggleEdit(): void {
@@ -43,6 +51,9 @@ export class ProfileCardComponent implements OnInit, OnChanges {
   }
 
   public saveForm(): void {
+    if (this.form.invalid) {
+      return;
+    }
     localStorage.setItem(
       'profileData',
       JSON.stringify({ ...this.form.value, dateOfBirth: moment(this.form.value.dateOfBirth).format('YYYY-MM-DD') }));
@@ -50,27 +61,27 @@ export class ProfileCardComponent implements OnInit, OnChanges {
     this.onEdit = !this.onEdit;
   }
 
-  private resetForm(): void {
-    const formData = JSON.parse(localStorage.getItem('profileData'));
-    this.form.patchValue({ ...formData });
-  }
-
-
   constructor(
+    private profileService: ProfileService,
     private fb: FormBuilder
   ) {
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    const { countriesList } = changes;
-    if (countriesList.currentValue) {
-      this.languages = [...new Set(this.countriesList.map(item => item.languages[0].name))].sort();
-    }
+    this.unsubscribeAll = new Subject();
   }
 
   ngOnInit(): void {
+    this.countriesList$ = this.profileService.getCountries();
+    this.countriesList$
+      .pipe(takeUntil(this.unsubscribeAll))
+      .subscribe(data => {
+      this.languages = [...new Set(data.map(item => item.languages[0].name))].sort();
+    });
     this.resetForm();
     this.form.disable();
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribeAll.next();
+    this.unsubscribeAll.complete();
   }
 
 }

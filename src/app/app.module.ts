@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { MainComponent } from './containers/main/main.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatCardModule } from '@angular/material/card';
 import { ProfileCardComponent } from './components/profile-card/profile-card.component';
@@ -21,7 +20,6 @@ import { MomentModule } from 'ngx-moment';
 @NgModule({
   declarations: [
     AppComponent,
-    MainComponent,
     ProfileCardComponent
   ],
   imports: [

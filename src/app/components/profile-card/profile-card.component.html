@@ -32,7 +32,7 @@
         <mat-form-field appearance="outline" class="w-100">
           <mat-label>country of birth</mat-label>
           <mat-select formControlName="countryOfBirth" >
-            <mat-option *ngFor="let country of countriesList" [value]="country.name">
+            <mat-option *ngFor="let country of countriesList$ | async" [value]="country.name">
               {{country.name}}
             </mat-option>
           </mat-select>
