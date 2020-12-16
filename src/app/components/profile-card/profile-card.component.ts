@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { AgeValidator } from '../../custom-validators/age.validator';
 import * as moment from 'moment';
 import { J } from '@angular/cdk/keycodes';
 
@@ -17,29 +18,36 @@ export class ProfileCardComponent implements OnInit, OnChanges {
 
   public onEdit = true;
 
+  public get fromFC(): any {
+    return this.form.get('dateOfBirth');
+  }
+
+
   public form = this.fb.group({
     name: [''],
-    dateOfBirth: [],
+    dateOfBirth: [moment(), [AgeValidator]],
     countryOfBirth: [],
     languages: [[]],
     gender: []
   });
 
   public toggleEdit(): void {
+    this.form.enable();
     this.onEdit = !this.onEdit;
   }
 
   public onCancel(): void {
-    console.log('fart');
     this.resetForm();
-    this.toggleEdit();
+    this.form.disable();
+    this.onEdit = !this.onEdit;
   }
 
   public saveForm(): void {
     localStorage.setItem(
       'profileData',
       JSON.stringify({ ...this.form.value, dateOfBirth: moment(this.form.value.dateOfBirth).format('YYYY-MM-DD') }));
-    this.toggleEdit();
+    this.form.disable();
+    this.onEdit = !this.onEdit;
   }
 
   private resetForm(): void {
@@ -62,6 +70,7 @@ export class ProfileCardComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.resetForm();
+    this.form.disable();
   }
 
 }
